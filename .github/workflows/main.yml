@@ -1,0 +1,33 @@
+name: Test Mac Installer
+
+on:
+  push:
+    paths:
+      - 'MCLL_Mac_Installer.sh'
+  workflow_dispatch:
+
+jobs:
+  test-mac:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Make script executable
+        run: chmod +x MCLL_Mac_Installer.sh
+
+      - name: Run installer (dry run)
+        run: |
+          echo -e "y\n$(pwd)/test_install" | ./MCLL_Mac_Installer.sh
+
+      - name: Verify installation
+        run: |
+          echo "=== Checking installed files ==="
+          ls -la test_install
+          ls -la test_install/HMCL
+          ls -la test_install/PrismLauncher
+          ls -la test_install/MultiMC
+          ls -la test_install/java
+          echo "=== Checking desktop shortcuts ==="
+          ls -la ~/Desktop/*.desktop || echo "No desktop shortcuts found"
+          echo "All tests passed!"
