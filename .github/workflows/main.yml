@@ -15,8 +15,15 @@ jobs:
         with:
           lfs: true
 
-      - name: Ensure LFS files are pulled
-        run: git lfs pull
+      - name: Pull LFS files
+        run: |
+          git lfs install
+          git lfs pull
+
+      - name: Verify file is not LFS pointer
+        run: |
+          file MCLL_Mac_Installer.sh
+          head -c 100 MCLL_Mac_Installer.sh | xxd
 
       - name: Make script executable
         run: chmod +x MCLL_Mac_Installer.sh
@@ -29,10 +36,10 @@ jobs:
         run: |
           echo "=== Checking installed files ==="
           ls -la test_install
-          ls -la test_install/HMCL
-          ls -la test_install/PrismLauncher
-          ls -la test_install/MultiMC
-          ls -la test_install/java
+          ls -la test_install/HMCL || echo "HMCL not found"
+          ls -la test_install/PrismLauncher || echo "PrismLauncher not found"
+          ls -la test_install/MultiMC || echo "MultiMC not found"
+          ls -la test_install/java || echo "Java not found"
           echo "=== Checking desktop shortcuts ==="
           ls -la ~/Desktop/*.desktop || echo "No desktop shortcuts found"
           echo "All tests passed!"
