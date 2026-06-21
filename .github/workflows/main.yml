@@ -15,6 +15,9 @@ jobs:
         with:
           lfs: true
 
+      - name: Ensure LFS files are pulled
+        run: git lfs pull
+
       - name: Make script executable
         run: chmod +x MCLL_Mac_Installer.sh
 
