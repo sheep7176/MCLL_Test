@@ -10,8 +10,7 @@ jobs:
   test-mac:
     runs-on: macos-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           lfs: true
 
@@ -23,14 +22,13 @@ jobs:
       - name: Verify file is not LFS pointer
         run: |
           file MCLL_Mac_Installer.sh
-          head -c 100 MCLL_Mac_Installer.sh | xxd
+          dd if=MCLL_Mac_Installer.sh bs=1 count=100 2>/dev/null | xxd
 
       - name: Make script executable
         run: chmod +x MCLL_Mac_Installer.sh
 
       - name: Run installer (dry run)
-        run: |
-          echo -e "y\n$(pwd)/test_install" | ./MCLL_Mac_Installer.sh
+        run: echo -e 'y\n'$(pwd)'/test_install' | ./MCLL_Mac_Installer.sh
 
       - name: Verify installation
         run: |
@@ -41,5 +39,5 @@ jobs:
           ls -la test_install/MultiMC || echo "MultiMC not found"
           ls -la test_install/java || echo "Java not found"
           echo "=== Checking desktop shortcuts ==="
-          ls -la ~/Desktop/*.desktop || echo "No desktop shortcuts found"
+          ls -la ~/Desktop/*.command || echo "No desktop shortcuts found"
           echo "All tests passed!"
